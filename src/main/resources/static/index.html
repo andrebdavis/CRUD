@@ -1,67 +1,133 @@
-<script
-        src="https://code.jquery.com/jquery-3.4.1.js"
-        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
-        crossorigin="anonymous"></script><script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Person Management</title>
+    <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+    <script>
 
-    class Person {
-        constructor(id, firstName, lastName) {
-            this.id = id;
-            this.firstName = firstName;
-            this.lastName = lastName;
-        }
-    }
-     will make 2 more methods for readAll
-
-    function create() {
-        // get the values that are in the input fields
-        const personIdElement = document.getElementById("person-id");
-        const firstNameElement = document.getElementById("first-name");
-        const lastNameElement = document.getElementById("last-name");
-
-        const personIdValue = personIdElement.value;
-        const firstNameValue = firstNameElement.value;
-        const lastNameValue = lastNameElement.value;
-        const person = new Person(personIdValue, firstNameValue, lastNameValue);
-
-        // call the create function of the spring boot app with the values
-        const personData = JSON.stringify(person);
-        console.log(personData);
-
-        $.ajax({
-            type: "POST",
-            crossDomain: true,
-            headers: {
-                'Accept':'application/json',
-                'Content-Type':'application/json',
-                'Access-Control-Allow-Origin': '*'
-            },
-            url: "/person-controller/create",
-            data: personData,
-            dataType: "JSON",
-            success: function(response) {
-                alert(JSON.stringify(response));
-            },
-            error: function(request, status, error) {
-                console.log("Error while digesting request")
-                console.log("Request value ↓")
-                console.log(request)
-                console.log("Status value ↓")
-                console.log(status);
-                console.log("Error value ↓")
-                console.log(error);
+        class Person {
+            constructor(id, firstName, lastName) {
+                this.id = id;
+                this.firstName = firstName;
+                this.lastName = lastName;
             }
-        });
-    }
-</script>
+        }
 
-<form>
-    <input id="person-id"> - ID</br>
-    <input id="first-name"> - FirstName</br>
-    <input id="last-name"> - LastName</br>
-    <button onClick="create(event)">Create</button>
-    <button onClick="read()">Read</button>
-    <button onClick="readAll()">Read All</button>
-    <button onClick="update()">Update</button>
-    <button onClick="delete()">Delete</button>
-</form>
+        function create(event) {
+            event.preventDefault(); // Prevent the default form submission
 
+            const personIdElement = document.getElementById("person-id");
+            const firstNameElement = document.getElementById("first-name");
+            const lastNameElement = document.getElementById("last-name");
+
+            const personIdValue = personIdElement.value;
+            const firstNameValue = firstNameElement.value;
+            const lastNameValue = lastNameElement.value;
+            const person = new Person(personIdValue, firstNameValue, lastNameValue);
+
+            const personData = JSON.stringify(person);
+
+            $.ajax({
+                type: "POST",
+                crossDomain: true,
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                url: "/create",
+                data: personData,
+                dataType: "JSON",
+                success: function(response) {
+                    alert(JSON.stringify(response));
+                },
+                error: function(request, status, error) {
+                    console.log("Error while digesting request")
+                    console.log("Request value ↓")
+                    console.log(request)
+                    console.log("Status value ↓")
+                    console.log(status);
+                    console.log("Error value ↓")
+                    console.log(error);
+                }
+            });
+        }
+
+        async function readAll(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            try {
+                const response = await $.ajax({
+                    type: "GET",
+                    crossDomain: true,
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    url: "/readAll",
+                });
+
+                // Display the JSON data
+                alert(JSON.stringify(response));
+            } catch (error) {
+                console.log("An error occurred during the readAll request.", error);
+            }
+        }
+
+
+
+
+
+        async function readById(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            try {
+                const response = await $.ajax({
+                    type: "GET",
+                    crossDomain: true,
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    url: "/read/"+personIdValue,
+                });
+
+                // Display the JSON data
+                alert(JSON.stringify(response));
+            } catch (error) {
+                console.log("An error occurred during the readById request.", error);
+            }
+        }
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+    </script>
+</head>
+<body>
+    <form>
+        <input id="person-id" placeholder="ID"><br>
+        <input id="first-name" placeholder="First Name"><br>
+        <input id="last-name" placeholder="Last Name"><br>
+        <button onClick="create(event)">Create</button>
+        <button onClick="read()">Read</button>
+        <button onClick="readAll(event)">Read All</button>
+        <button onClick="update()">Update</button>
+        <button onClick="delete()">Delete</button>
+    </form>
+</body>
+</html>
