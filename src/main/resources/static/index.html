@@ -55,6 +55,31 @@
             });
         }
 
+        async function read(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            const personIdElement = document.getElementById("person-id");
+            const personIdValue = personIdElement.value;
+
+            try {
+                const response = await $.ajax({
+                    type: "GET",
+                    crossDomain: true,
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    url: "/read/" + personIdValue,
+                });
+
+                // Display the JSON data
+                alert(JSON.stringify(response));
+            } catch (error) {
+                console.log("An error occurred during the read request.", error);
+            }
+        }
+
         async function readAll(event) {
             event.preventDefault(); // Prevent the default form submission
 
@@ -77,44 +102,67 @@
             }
         }
 
+        async function update(event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    const personIdElement = document.getElementById("person-id");
+    const personIdValue = personIdElement.value;
+
+    const firstNameElement = document.getElementById("first-name");
+    const lastNameElement = document.getElementById("last-name");
+
+    const firstNameValue = firstNameElement.value;
+    const lastNameValue = lastNameElement.value;
+
+    const updatedPerson = new Person(personIdValue, firstNameValue, lastNameValue);
+    const updatedPersonData = JSON.stringify(updatedPerson);
+
+    try {
+        const response = await $.ajax({
+            type: "PUT",
+            crossDomain: true,
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            url: "/update/" + personIdValue,
+            data: updatedPersonData, // Send the updated person data in the request body
+            dataType: "JSON",
+        });
+
+        // Display the JSON data
+        alert(JSON.stringify(response));
+    } catch (error) {
+        console.log("An error occurred during the update request.", error);
+    }
+}
 
 
-
-
-        async function readById(event) {
+        async function deleteEntry(event) {
             event.preventDefault(); // Prevent the default form submission
+
+            const personIdElement = document.getElementById("person-id");
+            const personIdValue = personIdElement.value;
 
             try {
                 const response = await $.ajax({
-                    type: "GET",
+                    type: "DELETE",
                     crossDomain: true,
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json',
                         'Access-Control-Allow-Origin': '*'
                     },
-                    url: "/read/"+personIdValue,
+                    url: "/delete/" + personIdValue,
                 });
 
                 // Display the JSON data
                 alert(JSON.stringify(response));
             } catch (error) {
-                console.log("An error occurred during the readById request.", error);
+                console.log("An error occurred during the delete request.", error);
             }
         }
-
-
-
-
-
-
-
-
-
-        
-
-
-
 
     </script>
 </head>
@@ -124,10 +172,10 @@
         <input id="first-name" placeholder="First Name"><br>
         <input id="last-name" placeholder="Last Name"><br>
         <button onClick="create(event)">Create</button>
-        <button onClick="read()">Read</button>
+        <button onClick="read(event)">Read</button>
         <button onClick="readAll(event)">Read All</button>
-        <button onClick="update()">Update</button>
-        <button onClick="delete()">Delete</button>
+        <button onClick="update(event)">Update</button>
+        <button onClick="deleteEntry(event)">Delete</button>
     </form>
 </body>
 </html>
