@@ -17,7 +17,7 @@ public class PersonConfig {
         person1.setLastName("Davis");
 
         Person person2 = new Person();
-        person2.setFirstName("CJ");
+        person2.setFirstName("CJD");
         person2.setLastName("Jones");
 
         repository.saveAll(Arrays.asList(
